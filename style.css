@@ -4,7 +4,7 @@ body {
     box-sizing: border-box;
     color: #35465d;
   }
-  canvas {
+  file-upload-content-wrap {
     position: absolute;
   }
   .file-upload {
@@ -46,9 +46,9 @@ body {
     position: relative;
     text-align: center;
   }
-  .file-upload-content-wrap {
+  /* .file-upload-content-wrap {
     display: none;
-  }
+  } */
   #loading {
     display: none;
   }

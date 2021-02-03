@@ -1,4 +1,4 @@
-
+const video = document.getElementById('video')
 Promise.all([
   faceapi.nets.tinyFaceDetector.loadFromUri('./models'),
   faceapi.nets.faceLandmark68Net.loadFromUri('./models'),
@@ -6,15 +6,28 @@ Promise.all([
   // faceapi.nets.ageGenderNet.loadFromUri('/models')
 ])
 
-let isDetection;
-let video;
 function startVideo() {
+  // navigator.getUserMedia(
+  //   { video: {} },
+  //   stream => video.srcObject = stream,
+  //   err => console.error(err)
+  // )
+  navigator.mediaDevices.getUserMedia({
+    video: true,
+    audio: false
+  })
+    .then(
+      (cameraStream) => {
+        video.srcObject = cameraStream;
+      }
+    )
+}
+let isDetection;
+video.addEventListener('playing', () => {
   const canvas = faceapi.createCanvasFromMedia(video)
   document.getElementById("webcam-container").appendChild(canvas);
-
-  const videosize = video;//document.getElementById("video")
-  const displaySize = { width: videosize.width, height: videosize.height }
-  console.log(displaySize)
+  const videosize = document.getElementById("video")
+  const displaySize = { width: videosize.clientWidth, height: videosize.clientHeight }
   faceapi.matchDimensions(canvas, displaySize)
   setInterval(async () => {
     const detections = await faceapi.detectAllFaces(video, new faceapi.TinyFaceDetectorOptions()).withFaceLandmarks()//.withAgeAndGender()
@@ -37,7 +50,7 @@ function startVideo() {
     // })
     // faceapi.draw.drawFaceExpressions(canvas, resizedDetections)
   }, 100)
-}
+})
 
 
 async function uploadImage() {
