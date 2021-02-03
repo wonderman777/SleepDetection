@@ -606,3 +606,12 @@ body {
   .form-check-label {
     color: ivory;
 }
+
+#indicator{
+  display:none;
+  position: absolute;;
+  top: 2%;
+  left: 50%;
+  transform: translate( -50%, 0% );
+  color: ivory;
+}

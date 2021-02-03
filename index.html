@@ -64,14 +64,19 @@
                     <video id="video" autoplay muted></video>
                 </div>
                 <div id="loading" class="animated bounce">
-                    <div class="spinner-grow" role="status">
+                    <div class="spinner-border" role="status">
                         <span class="sr-only">Loading...</span>
                     </div>
                     <p class="text-center">Loading...</p>
                 </div>
-
-                <p class="result-message"></p>
-                <div id="label-container" class="d-flex flex-column justify-content-around"></div>
+                <!-- <p class="result-message"></p> -->
+                <div id="indicator" class="animated bounce">
+                    <div class="spinner-grow text-danger" role="status">
+                        <span class="sr-only">졸음 감시중...</span>
+                    </div>
+                    <p class="text-center">졸음 감시중...</p>
+                </div>
+                <!-- <div id="label-container" class="d-flex flex-column justify-content-around"></div> -->
                 <!-- <img id="faceImg" src=""> -->
                 <div class="progress m-3">
                     <b class="progress__bar">
@@ -81,11 +86,11 @@
                     </b>
                 </div>
                 <div class="form-check m-2">
-                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                    <label class="form-check-label" for="flexCheckDefault">
-                        얼굴분석
-                    </label>
-                </div>                
+                        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                        <label class="form-check-label" for="flexCheckDefault">
+                            얼굴분석
+                        </label>
+                </div>
                 <div id="addThis" class="addthis_inline_share_toolbox"></div>
             </div>
         </div>
@@ -124,10 +129,10 @@
                 // await webcam.play();                
                 window.requestAnimationFrame(loop);
                 // append elements to the DOM               
-                labelContainer = document.getElementById("label-container");
-                for (let i = 0; i < maxPredictions; i++) { // and class labels
-                    labelContainer.appendChild(document.createElement("div"));
-                }
+                // labelContainer = document.getElementById("label-container");
+                // for (let i = 0; i < maxPredictions; i++) { // and class labels
+                //     labelContainer.appendChild(document.createElement("div"));
+                // }
             }
             init().then(function () {
                 $('#loading').hide();
@@ -149,10 +154,11 @@
             document.getElementById("label-container");
             if (isDetection) {
                 if (outputImageData != undefined) {
+                    $('#indicator').show();
                     const prediction = await model.predict(outputImageData);
                     for (let i = 0; i < maxPredictions; i++) {
-                        const classPrediction = prediction[i].className + ": " + prediction[i].probability.toFixed(2);
-                        labelContainer.childNodes[i].innerHTML = classPrediction;
+                        // const classPrediction = prediction[i].className + ": " + prediction[i].probability.toFixed(2);
+                        // labelContainer.childNodes[i].innerHTML = classPrediction;
                         if (prediction[i].className == "close") {
                             if (prediction[i].probability.toFixed(2) > 0.5) {
                                 update();
@@ -165,9 +171,11 @@
                         }
                     }
                 } else {
+                    $('#indicator').hide();
                     resetPercent();
                 }
             } else {
+                $('#indicator').hide();
                 resetPercent();
             }
 
@@ -180,6 +188,7 @@
 
     </footer>
     <script>
+        var audio = new Audio('audios/졸지마세요.mp3');
         var $progress = $(".progress"),
             $bar = $(".progress__bar"),
             $text = $(".progress__text"),
@@ -211,7 +220,7 @@
                     $progress.addClass("progress--complete");
                     $bar.addClass("progress__bar--blue");
                     $text.find("em").text("Wake Up!!");
-
+                    audio.play();
                 } else {
                     if (percent >= green) {
                         $bar.addClass("progress__bar--green");
