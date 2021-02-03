@@ -43,6 +43,7 @@ body {
   
   .file-upload-content {
     /* display: none; */
+    position: relative;
     text-align: center;
   }
   .file-upload-content-wrap {
@@ -596,9 +597,9 @@ body {
     }
   }
   .form-check{
-    position:absolute;
-    top: 15%;
-    left: 75%;
+    position: absolute;;
+    top: 2%;
+    left: 10%;
     transform: translate( -50%, -50% );
   }
 
