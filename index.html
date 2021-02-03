@@ -64,11 +64,12 @@
                     <!-- <video id="video" autoplay muted></video> -->
                 </div>
                 <div id="loading" class="animated bounce">
-                    <div class="spinner-border" role="status">
+                    <div class="spinner-grow" role="status">
                         <span class="sr-only">Loading...</span>
                     </div>
                     <p class="text-center">Loading...</p>
                 </div>
+
                 <!-- <p class="result-message"></p> -->
                 <div id="indicator" class="animated bounce">
                     <div class="spinner-grow text-danger" role="status">
@@ -76,7 +77,7 @@
                     </div>
                     <p class="text-center">졸음 감시중...</p>
                 </div>
-                <!-- <div id="label-container" class="d-flex flex-column justify-content-around"></div> -->
+                <div id="label-container" class="d-flex flex-column justify-content-around"></div>
                 <!-- <img id="faceImg" src=""> -->
                 <div class="progress m-3">
                     <b class="progress__bar">
@@ -86,10 +87,10 @@
                     </b>
                 </div>
                 <div class="form-check m-2">
-                        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                        <label class="form-check-label" for="flexCheckDefault">
-                            얼굴분석
-                        </label>
+                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                    <label class="form-check-label" for="flexCheckDefault">
+                        얼굴분석
+                    </label>
                 </div>
                 <div id="addThis" class="addthis_inline_share_toolbox"></div>
             </div>
@@ -112,7 +113,7 @@
                 $('.image-upload-wrap').hide();
                 $('.file-upload-content-wrap').show();
                 $('#loading').show();
-                // $('canvas').hide();
+                $('canvas').hide();
                 const modelURL = URL + "model.json";
                 const metadataURL = URL + "metadata.json";
 
@@ -122,39 +123,40 @@
                 // Note: the pose library adds "tmImage" object to your window (window.tmImage)
                 model = await tmImage.load(modelURL, metadataURL);
                 maxPredictions = model.getTotalClasses();
-
-                const flip = false; // whether to flip the webcam
-                webcam = new tmImage.Webcam(200, 200, flip); // width, height, flip                
+                // Convenience function to setup a webcam
+                const flip = true; // whether to flip the webcam
+                webcam = new tmImage.Webcam(640, 480, flip); // width, height, flip
                 await webcam.setup(); // request access to the webcam
                 await webcam.play();
-                video = webcam.webcam;
-                // startVideo();                
+                const video = webcam.webcam;
+                video.setAttribute("id", "video")
+                document.getElementById('webcam-container').appendChild(video);
                 window.requestAnimationFrame(loop);
-                document.getElementById("webcam-container").appendChild(webcam.canvas);
+                startVideo();
                 // append elements to the DOM               
-                // labelContainer = document.getElementById("label-container");
-                // for (let i = 0; i < maxPredictions; i++) { // and class labels
-                //     labelContainer.appendChild(document.createElement("div"));
-                // }
+                //     labelContainer = document.getElementById("label-container");
+                //     for (let i = 0; i < maxPredictions; i++) { // and class labels
+                //         labelContainer.appendChild(document.createElement("div"));
+                //     }
             }
             init().then(function () {
                 $('#loading').hide();
             });
         }
         async function loop() {
-            webcam.update(); // update the webcam frame
+            webcam.update(); // update the webcam frame            
             await predict();
             window.requestAnimationFrame(loop);
         }
         // run the webcam image through the image model
         async function predict() {
             if (document.getElementById("flexCheckDefault").checked) {
-                // $('canvas').show();
+                $('canvas').show();
             } else {
-                // $('canvas').hide();
+                $('canvas').hide();
             }
             // predict can take in an image, video or canvas html element
-            document.getElementById("label-container");
+            // labelContainer = document.getElementById("label-container");
             if (isDetection) {
                 if (outputImageData != undefined) {
                     $('#indicator').show();
@@ -181,7 +183,6 @@
                 $('#indicator').hide();
                 resetPercent();
             }
-
         }
     </script>
     <footer class="footer pt-5 container d-flex justify-content-center align-items-center">
@@ -191,7 +192,7 @@
 
     </footer>
     <script>
-        var audio = new Audio('audios/졸지마세요.mp3');
+        var audio = new Audio('audios/졸지마.mp3');
         var $progress = $(".progress"),
             $bar = $(".progress__bar"),
             $text = $(".progress__text"),

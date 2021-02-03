@@ -25,7 +25,7 @@ function startVideo() {
 let isDetection;
 video.addEventListener('playing', () => {
   const canvas = faceapi.createCanvasFromMedia(video)
-  document.getElementById("webcam-container").appendChild(canvas);
+  document.getElementById("webcam-container").appendChild(canvas)
   const videosize = document.getElementById("video")
   const displaySize = { width: videosize.clientWidth, height: videosize.clientHeight }
   faceapi.matchDimensions(canvas, displaySize)

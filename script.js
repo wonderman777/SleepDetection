@@ -1,20 +1,15 @@
-
 Promise.all([
   faceapi.nets.tinyFaceDetector.loadFromUri('./models'),
   faceapi.nets.faceLandmark68Net.loadFromUri('./models'),
   // faceapi.nets.faceRecognitionNet.loadFromUri('/models'),
   // faceapi.nets.ageGenderNet.loadFromUri('/models')
 ])
-
 let isDetection;
-let video;
 function startVideo() {
+  let video = document.getElementById('video')
   const canvas = faceapi.createCanvasFromMedia(video)
   document.getElementById("webcam-container").appendChild(canvas);
-
-  const videosize = video;//document.getElementById("video")
-  const displaySize = { width: videosize.width, height: videosize.height }
-  console.log(displaySize)
+  const displaySize = { width: video.clientWidth, height: video.clientHeight }
   faceapi.matchDimensions(canvas, displaySize)
   setInterval(async () => {
     const detections = await faceapi.detectAllFaces(video, new faceapi.TinyFaceDetectorOptions()).withFaceLandmarks()//.withAgeAndGender()
