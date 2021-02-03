@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Single+Day&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW"
+        crossorigin="anonymous"></script> -->
+    <title>졸음 방지</title>
+    <meta name="title" content="동물상 분석 테스트">
+    <meta name="subject" content="인공 지능 동물상 분석 테스트">
+    <meta name="description" content="인공지능이 말해주는 동물상" />
+    <meta name="keywords"
+        content="전생, 동물상, 동물상테스트, 동물상 ,분석,  연예인 동물상 테스트,  동물상, 동물상 보는법, 동물상 테스트, face test, ai test" />
+    <meta name="author" content="원더맨777">
+    <link rel="stylesheet" href="style.css">
+    <link rel="canonical" href="https://animalface2.netlify.app/" />
+    <meta property="og:url" content="https://animalface2.netlify.app/" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="인공지능이 말해주는 동물상 테스트" />
+    <meta property="og:description" content="사진으로 분석하는 인공지능 동물상 테스트, 재미로 동물상 테스트. 인공지능(인공이)이 동물상을 분석합니다." />
+    <meta name="naver-site-verification" content="135a2e0fea312a286a2be7bf395aa6adbb2fa669" />
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-600a3c1972f03271"></script>
+    <script class="jsbin" src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-ST0E95MRV2"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+        gtag('config', 'G-ST0E95MRV2');
+    </script>
+    <script defer src="face-api.min.js"></script>
+    <script defer src="script.js"></script>
+</head>
+
+<body class="container">
+    <section class="section">
+        <h1 class="title">깜빡깜빡 졸음 감시</h1>
+    </section>
+    <div class="mt-3 container file-upload">
+        <div class="image-upload-wrap">
+            <input class="file-upload-input" type='button' onclick="start();" />
+            <div class="drag-text">
+                <img src="images\cctv_icon.png" class="mt-5 pt-2 upload">
+                <!-- <img src="images\click.svg" class="mt-5 pt-2 upload-click"> -->
+                <h3 class="mb-5 pb-2 pt-2 upload-text">Start</h3>
+            </div>
+        </div>
+        <div class="file-upload-content-wrap">
+            <div class="file-upload-content">
+                <div class="d-flex flex-column justify-content-around m-3" id="webcam-container">
+                    <video id="video" autoplay muted></video>
+                </div>
+                <div id="loading" class="animated bounce">
+                    <div class="spinner-grow" role="status">
+                        <span class="sr-only">Loading...</span>
+                    </div>
+                    <p class="text-center">Loading...</p>
+                </div>
+
+                <p class="result-message"></p>
+                <div id="label-container" class="d-flex flex-column justify-content-around"></div>
+                <!-- <img id="faceImg" src=""> -->
+                <div class="progress m-3">
+                    <b class="progress__bar">
+                        <span class="progress__text">
+                            Sleep: <em>0%</em>
+                        </span>
+                    </b>
+                </div>
+                <div class="form-check m-2">
+                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                    <label class="form-check-label" for="flexCheckDefault">
+                        얼굴분석 보기
+                    </label>
+                </div>                
+                <div id="addThis" class="addthis_inline_share_toolbox"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.3.1/dist/tf.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@0.8/dist/teachablemachine-image.min.js"></script>
+    <script type="text/javascript">
+        // More API functions here:
+        // https://github.com/googlecreativelab/teachablemachine-community/tree/master/libraries/image
+
+        // the link to your model provided by Teachable Machine export panel
+        const URL = "https://teachablemachine.withgoogle.com/models/XfmHReK2G/";
+
+        let model, webcam, labelContainer, maxPredictions;
+        function start() {
+            // Load the image model and setup the webcam
+            async function init() {
+                $('.image-upload-wrap').hide();
+                $('.file-upload-content-wrap').show();
+                $('#loading').show();
+                $('canvas').hide();
+                const modelURL = URL + "model.json";
+                const metadataURL = URL + "metadata.json";
+
+                // load the model and metadata
+                // Refer to tmImage.loadFromFiles() in the API to support files from a file picker
+                // or files from your local hard drive
+                // Note: the pose library adds "tmImage" object to your window (window.tmImage)
+                model = await tmImage.load(modelURL, metadataURL);
+                maxPredictions = model.getTotalClasses();
+                // Convenience function to setup a webcam
+                // const flip = true; // whether to flip the webcam
+                // webcam = new tmImage.Webcam(200, 200, flip); // width, height, flip
+                // await webcam.setup(); // request access to the webcam
+                // await webcam.play();                
+                window.requestAnimationFrame(loop);
+                // append elements to the DOM               
+                labelContainer = document.getElementById("label-container");
+                for (let i = 0; i < maxPredictions; i++) { // and class labels
+                    labelContainer.appendChild(document.createElement("div"));
+                }
+            }
+            init().then(function () {
+                $('#loading').hide();
+            });
+        }
+        async function loop() {
+            // webcam.update(); // update the webcam frame
+            await predict();
+            window.requestAnimationFrame(loop);
+        }
+        // run the webcam image through the image model
+        async function predict() {
+            if (document.getElementById("flexCheckDefault").checked) {
+                $('canvas').show();
+            } else {
+                $('canvas').hide();
+            }
+            // predict can take in an image, video or canvas html element
+            document.getElementById("label-container");
+            if (isDetection) {
+                if (outputImageData != undefined) {
+                    const prediction = await model.predict(outputImageData);
+                    for (let i = 0; i < maxPredictions; i++) {
+                        const classPrediction = prediction[i].className + ": " + prediction[i].probability.toFixed(2);
+                        labelContainer.childNodes[i].innerHTML = classPrediction;
+                        if (prediction[i].className == "close") {
+                            if (prediction[i].probability.toFixed(2) > 0.5) {
+                                update();
+                                // console.log("close");
+                            }
+                            else {
+                                resetPercent();
+                                // console.log("open");
+                            }
+                        }
+                    }
+                } else {
+                    resetPercent();
+                }
+            } else {
+                resetPercent();
+            }
+
+        }
+    </script>
+    <footer class="footer pt-5 container d-flex justify-content-center align-items-center">
+        <div>
+            <p>&copy; Wonderman777 2021. All Rights Reserved. </p>
+        </div>
+
+    </footer>
+    <script>
+        var $progress = $(".progress"),
+            $bar = $(".progress__bar"),
+            $text = $(".progress__text"),
+            percent = 0,
+            update,
+            resetColors,
+            speed = 1000,
+            orange = 30,
+            yellow = 55,
+            green = 85,
+            timer;
+        resetColors = function () {
+            $bar
+                .removeClass("progress__bar--green")
+                .removeClass("progress__bar--yellow")
+                .removeClass("progress__bar--orange")
+                .removeClass("progress__bar--blue");
+            $progress
+                .removeClass("progress--complete");
+        };
+
+        update = function () {
+            timer = setTimeout(function () {
+
+                percent = parseFloat(percent.toFixed(1));
+                $text.find("em").text(percent + "%");
+                if (percent >= 100) {
+                    percent = 100;
+                    $progress.addClass("progress--complete");
+                    $bar.addClass("progress__bar--blue");
+                    $text.find("em").text("Wake Up!!");
+
+                } else {
+                    if (percent >= green) {
+                        $bar.addClass("progress__bar--green");
+                    }
+                    else if (percent >= yellow) {
+                        $bar.addClass("progress__bar--yellow");
+                    }
+                    else if (percent >= orange) {
+                        $bar.addClass("progress__bar--orange");
+                    }
+                    speed = Math.floor(Math.random() * 1000);
+                    update();
+                }
+                $bar.css({ width: percent + "%" });
+                percent += 5;
+            }, speed);
+        };
+
+        setTimeout(function () {
+            $progress.addClass("progress--active");
+            resetPercent();
+            // update();
+        }, 1000);
+
+        resetPercent = function () {
+            percent = 0;
+            clearTimeout(timer);
+            resetColors();
+        };
+        // $(document).on("click", function (e) {
+        //     percent = 0;
+        //     clearTimeout(timer);
+        //     resetColors();
+        //     // update();
+        // });
+    </script>
+
+</body>
+<!-- Copyright (c) 2021 by Simon Goellner (https://codepen.io/simeydotme/pen/IrGqz)
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. -->
+
+</html>
