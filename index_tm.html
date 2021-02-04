@@ -42,7 +42,7 @@
         gtag('config', 'G-ST0E95MRV2');
     </script>
     <script defer src="face-api.min.js"></script>
-    <script defer src="script.js"></script>
+    <script defer src="script_tm.js"></script>
 </head>
 
 <body class="container">
@@ -104,7 +104,9 @@
         // https://github.com/googlecreativelab/teachablemachine-community/tree/master/libraries/image
 
         // the link to your model provided by Teachable Machine export panel
-        const URL = "https://teachablemachine.withgoogle.com/models/XfmHReK2G/";
+        // const URL = "https://teachablemachine.withgoogle.com/models/XfmHReK2G/";
+
+        const URL = "./models/";
 
         let model, webcam, labelContainer, maxPredictions;
         function start() {
@@ -114,6 +116,8 @@
                 $('.file-upload-content-wrap').show();
                 $('#loading').show();
                 $('canvas').hide();
+
+                
                 const modelURL = URL + "model.json";
                 const metadataURL = URL + "metadata.json";
 

@@ -42,7 +42,7 @@
         gtag('config', 'G-ST0E95MRV2');
     </script>
     <script defer src="face-api.min.js"></script>
-    <script defer src="script.js"></script>
+    <script defer src="script_video.js"></script>
 </head>
 
 <body class="container">
@@ -61,7 +61,7 @@
         <div class="file-upload-content-wrap">
             <div class="file-upload-content">
                 <div class="d-flex flex-column justify-content-around m-3" id="webcam-container">
-                    <!-- <video id="video" autoplay muted></video> -->
+                    <video id="video" autoplay muted></video>
                 </div>
                 <div id="loading" class="animated bounce">
                     <div class="spinner-border" role="status">
@@ -112,7 +112,7 @@
                 $('.image-upload-wrap').hide();
                 $('.file-upload-content-wrap').show();
                 $('#loading').show();
-                // $('canvas').hide();
+                $('canvas').hide();
                 const modelURL = URL + "model.json";
                 const metadataURL = URL + "metadata.json";
 
@@ -123,12 +123,12 @@
                 model = await tmImage.load(modelURL, metadataURL);
                 maxPredictions = model.getTotalClasses();
 
-                const flip = true; // whether to flip the webcam
-                webcam = new tmImage.Webcam(200, 200, flip); // width, height, flip                
-                await webcam.setup(); // request access to the webcam
-                await webcam.play();
-                video = webcam.webcam;
-                startVideo();                
+                // const flip = true; // whether to flip the webcam
+                // webcam = new tmImage.Webcam(200, 200, flip); // width, height, flip                
+                // await webcam.setup(); // request access to the webcam
+                // await webcam.play();
+                // video = webcam.webcam;
+                // startVideo();                
                 window.requestAnimationFrame(loop);
                 // append elements to the DOM               
                 // labelContainer = document.getElementById("label-container");
@@ -148,12 +148,12 @@
         // run the webcam image through the image model
         async function predict() {
             if (document.getElementById("flexCheckDefault").checked) {
-                // $('canvas').show();
+                $('canvas').show();
             } else {
-                // $('canvas').hide();
+                $('canvas').hide();
             }
             // predict can take in an image, video or canvas html element
-            // labelContainer = document.getElementById("label-container");
+            document.getElementById("label-container");
             if (isDetection) {
                 if (outputImageData != undefined) {
                     $('#indicator').show();
